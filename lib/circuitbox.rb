@@ -33,7 +33,7 @@ class Circuitbox
   end
 
   def self.circuit_store
-    self.instance.circuit_store ||= Moneta.new(:Memory, expires: true)
+    self.instance.circuit_store ||= Moneta.new(:Memory, :expires => true)
   end
 
   def self.circuit_store=(store)

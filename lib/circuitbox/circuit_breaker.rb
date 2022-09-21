@@ -4,11 +4,11 @@ class Circuitbox
                   :logger, :circuit_store, :notifier
 
     DEFAULTS = {
-      sleep_window:     300,
-      volume_threshold: 5,
-      error_threshold:  50,
-      timeout_seconds:  1,
-      time_window:      60,
+      :sleep_window =>     300,
+      :volume_threshold => 5,
+      :error_threshold =>  50,
+      :timeout_seconds =>  1,
+      :time_window =>      60,
     }
 
     #
@@ -99,11 +99,11 @@ class Circuitbox
     end
 
     def failure_count
-      circuit_store.load(stat_storage_key(:failure), raw: true).to_i
+      circuit_store.load(stat_storage_key(:failure), :raw => true).to_i
     end
 
     def success_count
-      circuit_store.load(stat_storage_key(:success), raw: true).to_i
+      circuit_store.load(stat_storage_key(:success), :raw => true).to_i
     end
 
     def try_close_next_time
@@ -114,7 +114,7 @@ class Circuitbox
     def open!
       log_event :open
       logger.debug "[CIRCUIT] opening #{service} circuit"
-      circuit_store.store(storage_key(:asleep), true, expires: option_value(:sleep_window))
+      circuit_store.store(storage_key(:asleep), true, :expires => option_value(:sleep_window))
       half_open!
       was_open!
     end
@@ -199,17 +199,17 @@ class Circuitbox
 
     # When there is a successful response within a count interval, clear the failures.
     def clear_failures!
-      circuit_store.store(stat_storage_key(:failure), 0, raw: true)
+      circuit_store.store(stat_storage_key(:failure), 0, :raw => true)
     end
 
     # Logs to process memory.
     def log_event_to_process(event)
       key = stat_storage_key(event)
-      if circuit_store.load(key, raw: true)
+      if circuit_store.load(key, :raw => true)
         circuit_store.increment(key)
       else
         # yes we want a string here, as the underlying stores impement this as a native type.
-        circuit_store.store(key, "1", raw: true)
+        circuit_store.store(key, "1", :raw => true)
       end
     end
 
